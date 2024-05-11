@@ -1,0 +1,30 @@
+services:
+  mosquitto-brkr:
+    image: eclipse-mosquitto
+    hostname: ft-broker
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./config/password.txt:/mosquitto/config/password.txt
+  mqtt-pub:
+    image: eclipse-mosquitto:latest
+    command: sh -c "mosquitto_pub -h ft-broker -t test -m 'Hello World'"
+    depends_on:
+      - mosquitto-brkr
+  mqtt-sub:
+    image: eclipse-mosquitto:latest
+    command: sh -c "mosquitto_sub -h ft-broker -t test -u admin -P password"
+    depends_on:
+      - mosquitto-brkr
+  red-node-ui:
+    image: ft/ft-ui:latest
+    container_name: ft_ui
+    restart: unless-stopped
+    ports:
+      - 1880:1880
+    volumes:
+      - ./data/flows.json:/data/flows.json
