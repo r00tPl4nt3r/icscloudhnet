@@ -21,6 +21,7 @@ This is the architecture for the solution:
 
 ### How to install
 
+
     git clone 
     cd deployments/FT9V/docker
     docker build dockerfiles/ -t ft/ft-ui
