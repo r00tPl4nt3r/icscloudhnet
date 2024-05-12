@@ -32,4 +32,6 @@ services:
     image: ft/ft-sensor
     container_name: ft-sensor
     restart: unless-stopped
+    volumes:
+      - ./ft-sensor/data/:/user/app/src/data
     

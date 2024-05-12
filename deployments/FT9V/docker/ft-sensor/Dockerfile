@@ -8,5 +8,7 @@ WORKDIR /user/app/src
 COPY requirements.txt ./
 COPY sensors.py ./
 RUN pip install --no-cache-dir -r requirements.txt
+RUN mkdir data
+
 
 CMD [ "python", "./sensors.py" ]
