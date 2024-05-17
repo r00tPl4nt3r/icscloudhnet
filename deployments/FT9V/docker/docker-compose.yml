@@ -17,7 +17,7 @@ services:
       - mosquitto-brkr
   mqtt-sub:
     image: eclipse-mosquitto:latest
-    command: sh -c "mosquitto_sub -h ft-broker -t test -u admin -P password"
+    command: sh -c "mosquitto_sub -h ft-broker -t o/ptu"
     depends_on:
       - mosquitto-brkr
   red-node-ui:

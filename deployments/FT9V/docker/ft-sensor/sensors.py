@@ -12,22 +12,21 @@ port = 1883
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect("ft-broker", port=port)
 
-
-data = {}
-with open('./data/21.jpg', mode='rb') as file:
-    img = file.read()
-
-icamera={ 
-    "data" : "data:image/jpeg;base64,"+base64.encodebytes(img).decode('utf-8'),
-    "ts" : datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    }
-
-client.connect("ft-broker", port=port)
-topic = "i/cam"
-message= json.dumps(icamera)
-client.publish(topic, message)
-
 while True:
+    with open('./data/11.jpg', mode='rb') as file:
+        img = file.read()
+
+    icamera={ 
+        "data" : "data:image/jpeg;base64,"+base64.encodebytes(img).decode('utf-8'),
+        "ts" : datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        }
+
+    client.connect("ft-broker", port=port)
+    topic = "i/cam"
+    message= json.dumps(icamera)
+    client.publish(topic, message)
+
+
     ibme680={"aq" : round(random.gauss(15, 1),1) ,
         "gr" : 836963.0,
         "h" : round(random.gauss(23, 1),0),
