@@ -14,7 +14,7 @@ client.connect("ft-broker", port=port)
 
 
 data = {}
-with open('./data/21.jpg', mode='rb') as file:
+with open('./data/img/21.jpg', mode='rb') as file:
     img = file.read()
 
 icamera={ 
