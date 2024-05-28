@@ -1,0 +1,16 @@
+FROM ubuntu:latest
+
+RUN apt-get update
+RUN apt install libfuse2
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+
+COPY ./uaexpert-bin-linux-x86_64-1.7.1-540.AppImage /usr/home/src/
+
+WORKDIR /usr/home/src
+
+RUN useradd -u 8877 userapp
+USER john
+
+RUN echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> ~/.pam_environment
+
+CMD ["./uaexpert-bin-linux-x86_64-1.7.1-540.AppImage"]

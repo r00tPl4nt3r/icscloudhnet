@@ -1,7 +1,7 @@
 services:
   mosquitto-brkr:
     image: eclipse-mosquitto
-    hostname: ft-broker
+    hostname: ft-broker-plc
     container_name: mosquitto_opcua
     restart: unless-stopped
     ports:
@@ -16,4 +16,11 @@ services:
     restart: unless-stopped
     ports:
       - 1880:1880
+  opcua-plc:
+    image: plc/opcua:latest
+    container_name: plc_opcua
+    hostname: plc_opcua
+    restart: unless-stopped
+    ports:
+      - 4840:4840
     
