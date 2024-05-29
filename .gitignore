@@ -1,0 +1,4 @@
+# ignore ALL .log files
+*.log
+#ignore MacBook DS_Store
+.DS_Store
