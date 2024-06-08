@@ -23,4 +23,6 @@ services:
     restart: unless-stopped
     ports:
       - 4840:4840
-    
+    volumes:
+      - ./opcua-plc/data/file.csv:/user/app/src/data/file.csv 
+      - ./opcua-plc/data/file.xml:/user/app/src/data/file.xml
