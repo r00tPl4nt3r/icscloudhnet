@@ -9,8 +9,6 @@ This is the architecture for the solution:
 
 ![architecture](/doc/images/architecture.drawio.svg "Architecture")
 
-
-
 # Deployments
 
 ## FischerTechnik 9v
@@ -21,7 +19,8 @@ This is the architecture for the solution:
 
 ### How to install
 
-    git clone 
+
+    gh repo clone r00tPl4nt3r/icscloudhnet
     cd deployments/FT9V/docker
     docker build dockerfiles/ -t ft/ft-ui
     docker compose
@@ -36,11 +35,34 @@ Also you can test the MQTT broker working by opening any MQTT client and queryin
 
 ![UserInterface](/doc/images/mqtt_client.png "UI")
 
+##  FischerTechnik 24v 
 
-
-## TODO - FischerTechnik 24v
-
-- MQTT broker
+- MQTT Broker
+- HMI (NodeRED)(client with support for OPCUA and MQTT)
 - MQTT producer/receiver
-- UI Interface
-- OpenPLC
+- PLC (OPCUA Server)
+
+### How to install
+
+    gh repo clone r00tPl4nt3r/icscloudhnet
+    cd deployments/FT24V/docker
+    docker build dockerfiles/ -t ft/ft-ui
+    docker compose
+
+
+## TODO - FischerTechnik 24v (Done)
+
+- MQTT broker (Solved)
+- MQTT producer/receiver(Solved)
+- UI Interface(Solved)
+- OPCUA deployment (Solved)
+- OPCUA Collector ((Solved))
+
+## TODO General
+
+- Logging
+- Networking
+    - Client
+    - SErver
+
+- 
