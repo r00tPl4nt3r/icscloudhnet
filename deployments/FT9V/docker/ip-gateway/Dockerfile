@@ -6,9 +6,7 @@ RUN apt-get update && apt-get install -y \
     ppp \
     iptables
 
-COPY ./ipsec.conf /etc/ipsec.conf
-COPY ./xl2tpd.conf /etc/xl2tpd/xl2tpd.conf
-COPY ./options.xl2tpd /etc/ppp/options.xl2tpd
-COPY ./chap-secrets /etc/ppp/chap-secrets
+COPY ./etc/ /etc
+
 
 CMD ["sh", "-c", "ipsec start --nofork && xl2tpd"]
