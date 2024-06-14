@@ -1,8 +1,12 @@
 from opcua import ua, Server
-import time, random
+from opcua import Node
+import time, random, csv, sys
 import logging
+from opcua import ua
 
-logging.basicConfig(level=logging.DEBUG)
+
+csv.field_size_limit(sys.maxsize)
+logging.basicConfig(level=logging.WARN)
 
 
 # Create an OPC UA server instance
@@ -12,55 +16,82 @@ url = "opc.tcp://0.0.0.0:4840"
 server.set_endpoint(url)
 
 
+##0:Root,0:Objects,0:Server,0:Namespaces,0:http://opcfoundation.org/UA/
 
 
 # Create a new address space
-address_space = server.register_namespace("MyNamespace")
+address_space = server.register_namespace("two")
+address_space = server.register_namespace("three")
 
-# Create a folder node to organize the nodes
-folder = server.get_objects_node().add_object(address_space, "MyFolder")
-
-# Create a DeviceSet node to organize the nodes
+# Create a PLC node to organize the nodes
 plc = server.get_objects_node().add_object(address_space, "PLC")
-
-# Add nodes to the address space
-individual_weight_node = folder.add_variable(address_space, "ns=4;s=individual_weight", "Individual Weight")
-request_to_collect_node = folder.add_variable(address_space, "ns=4;s=request_to_collect", "Request to Collect")
-gtyp_Interface_Dashboard = plc.add_variable(address_space,'ns=3;s="gtyp_Interface_Dashboard"."Subscribe"."State_Order"."s_state"', "State_Order")
-plc.a
-
-# Set the nodes as writable
-individual_weight_node.set_writable()
-request_to_collect_node.set_writable()
-
-# Assign values to the nodes
-individual_weight_node.set_value(1500)
-request_to_collect_node.set_value(False)
-gtyp_Interface_Dashboard.set_value("Test")
+#Set nodeid as a string
+plc.set_attribute(ua.AttributeIds.DisplayName, ua.DataValue(ua.LocalizedText("PLC")))
+plc.set_attribute(ua.AttributeIds.Description, ua.DataValue(ua.LocalizedText("PLC node")))
+print(plc.nodeid)
+gtyp_VGR = plc.add_object(address_space, "gtyp_VGR")
+gtyp_Setup = plc.add_object(address_space, "gtyp_Setup")
+gtyp_HBW = plc.add_object(address_space, "gtyp_HBW")
+gtyp_SSC = plc.add_object(address_space, "gtyp_SSC")
 
 
-# Start the OPC UA server
-server.start()
-logging.debug("OPC UA server started at", url)
+# Open the file
+with open('./data/opcua_tree.csv', 'r') as file:
+    # Create a CSV reader
+    reader = csv.reader(file, delimiter=';')
+    # Skip the header
+    next(reader)
+    # Iterate over the rows (10 first lines)
 
-def generate_random_weight():
-    
-    random_number = random.randint(1500, 3000)  
-    return random_number
+    i=0
+    for row in reader:
+        if row[10] == "NodeClass.Variable" and "gtyp" in row[0]:
+            print(row)
+            try:
+                s_nodeid= row[0].split(";s=")[1]
+                datatype = "ua." + row[4].split("type:")[1].split(")")[0]
+                if datatype == "ua.VariantType.Int16" or datatype == "ua.VariantType.Int32" or datatype == "ua.VariantType.Int64":
+                    value = int(row[4].split("val:")[1].split(",")[0])
+            except:
+                print("error")
+                continue
+            if "gtyp_VGR" in row[0]:
+                try:
+                    # Add a variable to the PLC node
+                    opcuavar = gtyp_VGR.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
+                    opcuavar.set_writable()
+                except:
+                    print("error")
+            if "gtyp_Setup" in row[0]:  
+                try:
+                    # Add a variable to the PLC node
+                    opcuavar = gtyp_Setup.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))    
+                    opcuavar.set_writable()
+                except:
+                    print("error")
+            if "gtyp_HBW" in row[0]:
+                try:
+                    # Add a variable to the PLC node
+                    opcuavar = gtyp_HBW.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
+                    opcuavar.set_writable() 
+                except:
+                    print("error")
+            if "gtyp_SSC" in row[0]:
+                try:
+                    # Add a variable to the PLC node
+                    opcuavar = gtyp_SSC.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
+                    opcuavar.set_writable()
+                except:
+                    print("error")
 
 # Run the server indefinitely
+server.start()
+logging.INFO("OPC UA server Started")
+
 try:
     while True:
         time.sleep(10)
-        # if request_to_collect is false set it to true
-        if not request_to_collect_node.get_value():
-            request_to_collect_node.set_value(True)
-        weight = generate_random_weight()
-        individual_weight_node.set_value(weight)
-        logging.debug(individual_weight_node.get_value())
-        # set request_to_collect to false to indicate object is collected 
-        request_to_collect_node.set_value(False)
-        logging.debug("This is the values %s", request_to_collect_node.get_value())
+
          
 except KeyboardInterrupt:
     server.stop()

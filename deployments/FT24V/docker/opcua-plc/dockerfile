@@ -4,9 +4,9 @@ RUN pip install --no-cache-dir --upgrade pip
 WORKDIR /user/app/src
 
 COPY requirements.txt ./
-COPY servernull.py ./
+COPY server.py ./
 RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir data
 
 
-CMD [ "python", "./servernull.py" ]
+CMD [ "python", "./server.py" ]
