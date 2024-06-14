@@ -1,0 +1,33 @@
+services:
+  mosquitto-brkr:
+    image: eclipse-mosquitto
+    hostname: ft-broker-plc
+    container_name: mosquitto_opcua
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto-brkr/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto-brkr/config/password.txt:/mosquitto/config/password.txt
+  red-node-ui:
+    image: ft/ft-ui-opcua:latest
+    hostname: node-red-ui
+    container_name: ft_ui_opcua
+    restart: unless-stopped
+    ports:
+      - 1880:1880
+    volumes:
+       - ./ft-ui/data/flows_IOTpi2.json:/data/flows.json
+       - ./ft-ui/data/settings.js:/data/settings.js
+       - ./ft-ui/data/pub/images:/data/pub/images
+  opcua-plc:
+    image: plc/opcua:latest
+    container_name: plc_opcua
+    hostname: plc_opcua
+    restart: unless-stopped
+    ports:
+      - 4840:4840
+    volumes:
+      - ./opcua-plc/data/file.csv:/user/app/src/data/file.csv 
+      - ./opcua-plc/data/opcua_tree.csv:/user/app/src/data/opcua_tree.csv
