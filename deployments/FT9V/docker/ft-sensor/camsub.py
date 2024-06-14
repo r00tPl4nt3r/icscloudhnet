@@ -34,11 +34,11 @@ def on_message(client, userdata, msg):
     if jsonmsg["cmd"]=="end_pan": x=max-1; time.sleep(3)
     if jsonmsg["cmd"]=="start_tilt": y=max-1; time.sleep(3)
     if jsonmsg["cmd"]=="end_tilt": y=min; time.sleep(3)
-    if jsonmsg["cmd"]=="home": x=y=1; time.sleep(10)
+    if jsonmsg["cmd"]=="home": x=y=1; time.sleep(5)
     if jsonmsg["cmd"]=="stop": True
 
     data = {}
-    with open('./data/'+str(x)+str(y)+'.jpg', mode='rb') as file:
+    with open('./img/'+str(x)+str(y)+'.jpg', mode='rb') as file:
         img = file.read()
 
     icamera={ 
