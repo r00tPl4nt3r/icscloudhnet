@@ -19,6 +19,8 @@ services:
       - 1880:1880
     volumes:
        - ./ft-ui/data/flows_IOTpi2.json:/data/flows.json
+       - ./ft-ui/data/settings.js:/data/settings.js
+       - ./ft-ui/data/pub/images:/data/pub/images
   opcua-plc:
     image: plc/opcua:latest
     container_name: plc_opcua
