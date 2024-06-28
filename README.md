@@ -20,8 +20,8 @@ This is the architecture for the solution:
 ### How to install
 
 
-    gh repo clone r00tPl4nt3r/icscloudhnet
-    cd deployments/FT9V/docker
+    git clone https://github.com/r00tPl4nt3r/icscloudhnet
+    cd icscloudhnet/deployments/FT9V/docker/
     docker build dockerfiles/ -t ft/ft-ui
     docker compose
 
