@@ -38,7 +38,7 @@ def on_message(client, userdata, msg):
     if jsonmsg["cmd"]=="stop": True
 
     data = {}
-    with open('./img/'+str(x)+str(y)+'.jpg', mode='rb') as file:
+    with open('./data/img/'+str(x)+str(y)+'.jpg', mode='rb') as file:
         img = file.read()
 
     icamera={ 
