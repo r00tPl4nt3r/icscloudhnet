@@ -22,7 +22,7 @@ This is the architecture for the solution:
 
     git clone https://github.com/r00tPl4nt3r/icscloudhnet
     cd icscloudhnet/deployments/FT9V/docker/
-    docker build dockerfiles/ -t ft/ft-ui
+    docker build ft-ui/ -t ft/ft-ui
     docker compose
 
     Open http://localhost:1880/ui
