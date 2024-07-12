@@ -10,7 +10,7 @@ client = Client(OPC_SERVER)
 client.connect()
 client.load_type_definitions()  # load definition of server specific structures/extension objects
 
-def get_upcua_tree(node):
+def get_upcua_tree(node, csv_file, json_file):
     """
     Recursively retrieves information about the OPC UA server's address space and saves it to a CSV and JSON file.
 
@@ -106,7 +106,7 @@ def main():
     print("Children of root are: ", root.get_children())
 
 
-    get_upcua_tree(root)
+    get_upcua_tree(root, csv_file, json_file)
 
 if __name__ == "__main__":
     main()
