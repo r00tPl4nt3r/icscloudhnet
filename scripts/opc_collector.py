@@ -1,11 +1,25 @@
+
+
 import csv
 from opcua import Client, ua
 
-client = Client("opc.tcp://localhost:4840")
+# Define the OPC UA server
+OPC_SERVER = "opc.tcp://localhost:4840"
+
+client = Client(OPC_SERVER)
 client.connect()
 client.load_type_definitions()  # load definition of server specific structures/extension objects
 
 def get_upcua_tree(node):
+    """
+    Recursively retrieves information about the OPC UA server's address space and saves it to a CSV and JSON file.
+
+    Args:
+        node: The starting node to retrieve information from.
+
+    Returns:
+        None
+    """
     children = client.get_node(node).get_children()
     
     for child in children:
@@ -61,7 +75,7 @@ def get_upcua_tree(node):
         except:
             Value="no_value"
         
-        # SAve the data as JSON
+        # Save the data as JSON
         with open(json_file, 'a') as file:
             file.write('{"nodeid": "' + nodeid + '", "children_data": "' + str(children_data) + '", "browse_name": "' + str(browse_name) + '", "name": "' + name + '", "attributes": "' + str(attributes) + '", "Display_Name": "' + str(Display_Name) + '", "Description": "' + str(Description) + '", "Data_Type": "' + str(Data_Type) + '", "Data_Value": "' + str(Data_Value) + '", "Node_ID": "' + str(Node_ID) + '", "Node_Class": "' + str(Node_Class) + '", "Parent": "' + str(Parent) + '", "References": "' + str(References) + '", "Type_Definition": "' + str(Type_Definition) + '", "User_WriteMask": "' + str(User_WriteMask) + '", "Value": "' + str(Value) + '"}\n')
 
@@ -74,17 +88,25 @@ def get_upcua_tree(node):
         get_upcua_tree(child)
 
 
-csv_file = 'opcua_server.csv'
-json_file = 'opcua_server.json'
 
-# Client has a few methods to get proxy to UA nodes that should always be in address space such as Root or Objects
-root = client.get_root_node()
-print("Root node is: ", root)
-objects = client.get_objects_node()
-print("Objects node is: ", objects)
+def main():
+    """
+    Main function to connect to the OPC UA server, retrieve information about the address space, and save it to CSV and JSON files.
+    """
+    csv_file = 'opcua_server.csv'
+    json_file = 'opcua_server.json'
 
-# Node objects have methods to read and write node attributes as well as browse or populate address space
-print("Children of root are: ", root.get_children())
+    # Client has a few methods to get proxy to UA nodes that should always be in address space such as Root or Objects
+    root = client.get_root_node()
+    print("Root node is: ", root)
+    objects = client.get_objects_node()
+    print("Objects node is: ", objects)
+
+    # Node objects have methods to read and write node attributes as well as browse or populate address space
+    print("Children of root are: ", root.get_children())
 
 
-get_upcua_tree(root)
+    get_upcua_tree(root)
+
+if __name__ == "__main__":
+    main()
