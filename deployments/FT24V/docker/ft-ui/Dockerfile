@@ -4,4 +4,5 @@ RUN npm install --no-audit --no-update-notifier --no-fund --save --save-prefix=~
 RUN npm install --no-audit --no-update-notifier --no-fund --save --save-prefix=~ --production --engine-strict node-red-dashboard@2.19.4
 
 USER root
+RUN mkdir -p /data/pub
 RUN chown node-red:node-red /data/pub 
