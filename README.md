@@ -21,8 +21,8 @@ This is the architecture for the solution:
 
 
     git clone https://github.com/r00tPl4nt3r/icscloudhnet
+    sh icscloudhnet/install.sh
     cd icscloudhnet/deployments/FT9V/docker/
-    docker build ft-ui/ -t ft/ft-ui
     docker compose
 
     Open http://localhost:1880/ui
@@ -45,8 +45,8 @@ Also you can test the MQTT broker working by opening any MQTT client and queryin
 ### How to install
 
     gh repo clone r00tPl4nt3r/icscloudhnet
-    cd deployments/FT24V/docker
-    docker build dockerfiles/ -t ft/ft-ui
+    sh icscloudhnet/install.sh
+    cd icscloudhnet/deployments/FT24V/docker/
     docker compose
 
 
@@ -60,9 +60,7 @@ Also you can test the MQTT broker working by opening any MQTT client and queryin
 
 ## TODO General
 
+- Remote Connector documentation.
 - Logging
-- Networking
-    - Client
-    - SErver
 
 - 
