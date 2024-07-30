@@ -22,7 +22,7 @@ services:
       - mosquitto-brkr
   red-node-ui:
     image: ft/ft-ui:latest
-    container_name: ft_ui_opcua
+    container_name: ft_ui_mqtt
     restart: unless-stopped
     ports:
       - 1880:1880
