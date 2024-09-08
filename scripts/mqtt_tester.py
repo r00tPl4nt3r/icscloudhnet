@@ -24,7 +24,7 @@ if len(sys.argv)<2 or sys.argv[1]=="-h" or sys.argv[1]=="--help":
 
 #define mqtt ip address from argument
 mqtt_ip = sys.argv[2]
-mqtt_port = 8883
+mqtt_port = int(sys.argv[3])
 time=100
 
 "resolve mqtt_ip domain"
@@ -46,7 +46,7 @@ if sys.argv[1]=="--connection":
         print("Time: ", i+1)
 
 
-        if len(sys.argv)>3 and sys.argv[3]=="--ssl":
+        if len(sys.argv)>4 and sys.argv[4]=="--ssl":
             "Connect to the mqtt broker with ssl"
             client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
             client.username_pw_set("testtest", "Testtest1")
@@ -84,7 +84,7 @@ elif sys.argv[1]=="--publication":
         print("Time: ", i+1)
 
         "Publish to the mqtt broker"
-        client.publish("test", "test number: "+str(i+1))
+        client.publish("test/test789565754656", "test number: "+str(i+1))
         sleep.sleep(1)
 
     "Disconnect from the mqtt broker"
@@ -104,10 +104,10 @@ elif sys.argv[1]=="--subscription":
         print("Time: ", i+1)
 
         "Subscribe to the mqtt broker"
-        client.subscribe("test")
+        client.subscribe("test/test789565754656")
 
         "Unsubscribe from the mqtt broker"
-        client.unsubscribe("test")
+        client.unsubscribe("test/test789565754656")
         sleep.sleep(1)
     
     "Disconnect from the mqtt broker"
