@@ -1,6 +1,6 @@
 # Script to write a value to an OPC UA server variable using the OPC UA Python library.
 # Use:
-#   python <server> <variable> <value>
+#   python3 opc_writer.py <server> <variable> <value>
 # Example: 
 #   python3 opc_writer.py "opc.tcp://192.168.0.1:4840" 'ns=3;s=\"gtyp_SSC\".\"di_Pos_Park_Horizontal\"' 3001
 # keep in mind that the variable to write must be of the correct data type.
