@@ -1,4 +1,4 @@
-# icscloudhnet
+# Trapnet
 Honeynet deployment for cloud environments.
 
 [TOC]
