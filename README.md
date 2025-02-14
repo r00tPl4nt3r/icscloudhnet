@@ -7,60 +7,14 @@ Honeynet deployment for cloud environments.
 
 This is the architecture for the solution:
 
-![architecture](/doc/images/architecture.drawio.svg "Architecture")
-
-# Deployments
-
-## FischerTechnik 9v
-
-- MQTT broker
-- MQTT producer/receiver
-- UI Interface
-
-### How to install
+![architecture](/doc/images/architecture.png "Architecture")
 
 
-    git clone https://github.com/r00tPl4nt3r/icscloudhnet
-    sh icscloudhnet/install.sh
-    cd icscloudhnet/deployments/FT9V/docker/
-    docker compose
+# How to Start.
 
-    Open http://localhost:1880/ui
+1. [Install the on-site connector.](/doc/cloud.copy.md)
+2. [Install the cloud deployment.](/doc/interface.md)
 
-Once the deployment is installed the UI will be available:
-
-![UserInterface](/doc/images/ui.png "UI")
-
-Also you can test the MQTT broker working by opening any MQTT client and querying your local interface ip address:
-
-![UserInterface](/doc/images/mqtt_client.png "UI")
-
-##  FischerTechnik 24v 
-
-- MQTT Broker
-- HMI (NodeRED)(client with support for OPCUA and MQTT)
-- MQTT producer/receiver
-- PLC (OPCUA Server)
-
-### How to install
-
-    gh repo clone r00tPl4nt3r/icscloudhnet
-    sh icscloudhnet/install.sh
-    cd icscloudhnet/deployments/FT24V/docker/
-    docker compose
+If you want to install the honeynet go directly to [Deployments](/deployments/README.md).
 
 
-## TODO - FischerTechnik 24v (Done)
-
-- MQTT broker (Solved)
-- MQTT producer/receiver(Solved)
-- UI Interface(Solved)
-- OPCUA deployment (Solved)
-- OPCUA Collector ((Solved))
-
-## TODO General
-
-- Remote Connector documentation.
-- Logging
-
-- 
