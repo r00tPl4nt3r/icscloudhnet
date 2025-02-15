@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - flask
+
+  flask:
+    image: flask:latest
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+    ports:
+      - "5000:5000"
+    command: flask run --host=0.0.0.0
+
+  flask_worker:
+    image: flask:latest
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --port=5001
