@@ -1,31 +1,115 @@
-version: '3.8'
+secrets:
+  db_password:
+    external: true
 
 services:
+
+  ca:
+    image: trapnet-ca:latest
+    volumes:
+      - ./nginx/certs:/certs
+      - ./ca/certs:/certs-ca
+      - ./client/certs:/client-certs
+      - ./provisioner/certs:/provisioner-certs
+    command: ["sh", "-c", 
+      '
+      echo "Generating CA key and certificate" | logger -t "CA";
+      openssl genrsa -out /ca/ca.key 2048;
+      echo "Generating CA certificate" | logger -t "CA";
+      openssl req -x509 -new -nodes -key /ca/ca.key -sha256 -days 500 -out /ca/ca.crt -subj "/CN=ca";
+      ls -la | logger -t "CA";
+      cp /ca/* /certs-ca;
+      echo "API GW certificates configuration" | logger -t "CA";
+      openssl genrsa -out /certs/apiserver.key 2048;      
+      openssl req -new -key /certs/apiserver.key -out /certs/apiserver.csr -subj "/CN=apiserver";
+      openssl x509 -req -in /certs/apiserver.csr -CA ca.crt -CAkey /ca/ca.key -CAcreateserial -out /certs/apiserver.crt -days 500;
+      openssl genrsa -out /client-certs/client.key 2048;
+      openssl req -new -key /client-certs/client.key -out /client-certs/client.csr -subj "/CN=client";
+      openssl x509 -req -in /client-certs/client.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial -out /client-certs/client.crt -days 500;
+      openssl genrsa -out /provisioner-certs/provisioner.key 2048;
+      openssl req -new -key /provisioner-certs/provisioner.key -out /provisioner-certs/provisioner.csr -subj "/CN=provisioner";
+      openssl x509 -req -in /provisioner-certs/provisioner.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial -out /provisioner-certs/provisioner.crt -days 500;
+      cp /ca/ca.crt /certs/ca.crt;
+      cp /ca/ca.crt /client-certs/ca.crt;
+      cp /ca/ca.crt /provisioner-certs/ca.crt
+      '
+      ]
+    
+
+
+
+  flask:
+    image: trapnet-api:latest
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+    ports:
+      - "5900:5000"
+    command: flask run --host=0.0.0.0
+    healthcheck:
+      test: ["CMD", "echo", "teset"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  flask_worker:
+    image: trapnet-api:latest
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --port=5901
+
+
+  provisioner:
+    image: trapnet-provisioner:latest
+    build:
+      context: ./provisioner
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+    ports:
+      - "6900:5000"
+    command: flask run --host=0.0.0.0
+    healthcheck:
+      test: ["CMD", "echo", "teset"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  wg:
+    image: trapnet-wg:latest
+    build:
+      context: ./wg
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+    ports:
+      - "5800:5000"
+    command: flask run --host=0.0.0.0
+    healthcheck:
+      test: ["CMD", "echo", "teset"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
   nginx:
     image: nginx:latest
     ports:
       - "80:80"
+      - "443:34443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs:/etc/nginx/ssl/
     depends_on:
-      - flask
-
-  flask:
-    image: flask:latest
-    build:
-      context: ./flask
-      dockerfile: Dockerfile
-    environment:
-      - FLASK_ENV=development
-    ports:
-      - "5000:5000"
-    command: flask run --host=0.0.0.0
-
-  flask_worker:
-    image: flask:latest
-    build:
-      context: ./flask
-      dockerfile: Dockerfile
-    environment:
-      - FLASK_ENV=development
-    command: flask run --host=0.0.0.0 --port=5001
+      ca:
+        condition: service_completed_successfully
+      flask:
+        condition: service_healthy
+      provisioner:
+        condition: service_healthy   
+      wg:
+        condition: service_healthy  

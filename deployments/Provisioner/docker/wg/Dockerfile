@@ -1,5 +1,9 @@
 FROM python:3.9-slim
 
+RUN apt-get update 
+RUN apt-get install -y wireguard
+RUN apt-get install -y openresolv
+
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
