@@ -4,3 +4,12 @@
 .DS_Store
 #ignore temporal run folder
 /run
+#ignore certs and secrets
+*.crt
+*.key
+*.csr
+*.pem
+*.pub
+*.p12
+#Templates
+*.json
