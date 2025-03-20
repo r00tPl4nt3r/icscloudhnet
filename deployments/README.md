@@ -40,19 +40,5 @@ Also you can test the MQTT broker working by opening any MQTT client and queryin
     docker compose
 
 
-## TODO - FischerTechnik 24v (Done)
-
-- MQTT broker (Solved)
-- MQTT producer/receiver(Solved)
-- UI Interface(Solved)
-- OPCUA deployment (Solved)
-- OPCUA Collector ((Solved))
-
-## TODO General
-
-- Remote Connector documentation.
-- Logging
-
-- 
 
 
