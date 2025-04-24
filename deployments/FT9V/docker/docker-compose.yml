@@ -34,4 +34,20 @@ services:
     restart: unless-stopped
     volumes:
       - ./ft-sensor/data/:/user/app/src/data
-    
+  ui-ssh:
+    image: cowrie/cowrie:latest
+    container_name: cowrie_ui
+    restart: unless-stopped
+    ports:
+      - 2522:2222
+    volumes:
+      - ./ft-ui-ssh/data/motd:/honeyfs/etc/motd
+      - ./ft-ui-ssh/data/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg
+      - ./ft-ui-ssh/data/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt
+
+  mqtt-ssh:
+    image: cowrie/cowrie:latest
+    container_name: cowrie_mqtt
+    restart: unless-stopped
+    ports:
+      - 2022:2222   
