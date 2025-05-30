@@ -3,6 +3,6 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: Urrego
     given-names: Diego
-title: "icscloudhnet"
+title: "trapnet"
 version: 1.0.0
 date-released: 2024-11-30
