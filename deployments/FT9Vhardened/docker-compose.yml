@@ -1,0 +1,92 @@
+services:
+  mosquitto-brkr:
+    image: eclipse-mosquitto
+    hostname: ft-broker
+    container_name: mosquitto-ft9v
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    volumes:
+      - ./mosquitto-brkr/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto-brkr/config/password.txt:/mosquitto/config/password.txt
+      - ./mosquitto-brkr/certs:/mosquitto/config/certs
+  mqtt-pub:
+    image: eclipse-mosquitto:latest
+    command: sh -c "mosquitto_pub -h ft-broker -t test -m 'Hello World'"
+    depends_on:
+      - mosquitto-brkr 
+  mqtt-sub:
+    image: eclipse-mosquitto:latest
+    command: sh -c "mosquitto_sub -h ft-broker -t test -u admin -P password"
+    depends_on:
+      - mosquitto-brkr
+  red-node-ui:
+    image: ft/ft-ui:latest
+    container_name: ft_ui_mqtt
+    restart: unless-stopped
+    ports:
+      - 1880:1880
+    volumes:
+      - ./ft-ui/data/flows.json:/data/flows.json
+      - ./ft-ui/certs:/data/certs
+  ft-sensor:
+    image: ft/ft-sensor
+    container_name: ft-sensor
+    restart: unless-stopped
+    volumes:
+      - ./ft-sensor/data/:/user/app/src/data
+      - ./ft-sensor/certs:/user/app/src/certs
+  
+  ca:
+    image: trapnet-ca:latest
+    hostname: mqtt-secure-broker-ca
+    container_name: ft-ca
+    volumes:
+      - ./mosquitto-brkr/certs:/certs
+      - ./ca/certs:/certs-ca
+      - ./ft-ui/certs:/client-certs
+      - ./ft-sensor/certs:/sensor-certs
+    command: ["sh", "-c", 
+      '
+      echo "Generating CA key and certificate";
+      openssl genrsa -out /ca/ca.key 2048;
+      echo "Generating CA certificate" | logger -t "CA";
+      openssl req -x509 -extensions v3_ca -new -nodes -key /ca/ca.key -sha256 -days 500 -out /ca/ca.crt -subj "/CN=ca";
+      
+      echo "Generate a mosquitto server key without encryption.";
+      openssl genrsa -out mosquitto.key 2048;
+      echo "Generate a server certificate signing request.";
+      openssl req -out mosquitto.csr -key mosquitto.key -new -subj "/CN=ft-broker";
+      echo "Send the CSR to the CA, or sign it with your CA key";
+      openssl x509 -req -in mosquitto.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out mosquitto.crt -days 365 ;
+
+      echo "Generate a client key without encryption.";
+      openssl genrsa -out client.key 2048;
+      echo "Generate a client certificate signing request to send to the CA.";
+      openssl req -out client.csr -key client.key -new -subj "/CN=client";
+      echo "Send the client CSR to the CA, or sign it with your CA key";
+      openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -days 365;
+
+
+      echo "Generate a second client key without encryption.";
+      openssl genrsa -out sensor.key 2048;
+      echo "Generate a client certificate signing request to send to the CA.";
+      openssl req -out sensor.csr -key sensor.key -new -subj "/CN=backup_client";
+      echo "Send the client CSR to the CA, or sign it with your CA key";
+      openssl x509 -req -in sensor.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out sensor.crt -days 365;
+
+      cp client* /client-certs;
+      cp mosquitto* /certs;
+      cp ca* /certs-ca;
+      cp sensor* /sensor-certs;
+      cp ca.crt /client-certs;
+      cp ca.crt /certs;
+      cp ca.crt /sensor-certs;
+      '
+      ]
+    
+
+    
+
+    

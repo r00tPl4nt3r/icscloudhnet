@@ -11,5 +11,7 @@
 *.pem
 *.pub
 *.p12
+*.srl
+
 #Templates
 *.json
