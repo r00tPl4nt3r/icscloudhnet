@@ -60,7 +60,7 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - ./cowrie/cowrie_broker:/cowrie/cowrie.cfg
+      - ./cowrie/cowrie_broker:/etc/cowrie.cfg
 
   cowrie_ui:
     image: cowrie/cowrie:latest
@@ -68,4 +68,5 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - ./cowrie/cowrie_ui:/cowrie/cowrie.cfg
+      - ./cowrie/cowrie_ui:/etc/cowrie.cfg
+
