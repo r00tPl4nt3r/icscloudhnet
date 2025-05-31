@@ -55,7 +55,7 @@ services:
       - red-node-ui
 
   cowrie_mqtt:
-    image: cowrie/cowrie:latest
+    image: cowrie_mqtt:latest
     container_name: cowrie_mqtt9v
     restart: unless-stopped
     network_mode: host
@@ -63,7 +63,7 @@ services:
       - ./cowrie/cowrie_ui/cowrie.cfg /cowrie/cowrie-git/etc/cowrie.cfg
 
   cowrie_ui:
-    image: cowrie/cowrie:latest
+    image: cowrie_ui:latest
     container_name: cowrie_ui9v
     restart: unless-stopped
     network_mode: host
