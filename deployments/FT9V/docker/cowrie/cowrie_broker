@@ -1,2 +1,0 @@
-[ssh]
-listen_endpoints = tcp:2210:interface=0.0.0.0
