@@ -74,6 +74,3 @@ services:
       type: bind
       source: ./cowrie/cowrie_ui
       target: /cowrie/cowrie-git/etc
-
-
-
