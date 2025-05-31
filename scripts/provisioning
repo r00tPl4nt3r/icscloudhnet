@@ -1,0 +1,202 @@
+#!/bin/bash
+
+# Function to check if running as root
+check_root() {
+    # Check if running as root
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "Error: This script must be run as root to add IP addresses"
+        exit 1
+    fi
+}
+
+# Function to detect ethernet interface
+detect_ethernet_interface() {
+    # Look for active ethernet interfaces (excluding loopback)
+    local eth_interface=$(ip link show | grep -E '^[0-9]+: (eth|en|eno|enp|ens)' | grep 'state UP' | head -1 | cut -d: -f2 | tr -d ' ')
+    
+    # If no active ethernet found, try any ethernet interface
+    if [ -z "$eth_interface" ]; then
+        eth_interface=$(ip link show | grep -E '^[0-9]+: (eth|en|eno|enp|ens)' | head -1 | cut -d: -f2 | tr -d ' ')
+    fi
+    
+    echo "$eth_interface"
+}
+
+# Function to get first IP address of interface
+get_first_ip() {
+    local interface=$1
+    local ip_addr=$(ip addr show "$interface" | grep 'inet ' | head -1 | awk '{print $2}' | cut -d'/' -f1)
+    echo "$ip_addr"
+}
+
+# Function to get network info
+get_network_info() {
+    local interface=$1
+    local cidr=$(ip addr show "$interface" | grep 'inet ' | head -1 | awk '{print $2}')
+    local ip=$(echo "$cidr" | cut -d'/' -f1)
+    local prefix=$(echo "$cidr" | cut -d'/' -f2)
+    
+    # Calculate network address and available IPs
+    local network=$(ipcalc -n "$cidr" 2>/dev/null | cut -d'=' -f2)
+    if [ -z "$network" ]; then
+        # Fallback method if ipcalc is not available
+        local i1 i2 i3 i4
+        IFS='.' read i1 i2 i3 i4 << EOF
+$ip
+EOF
+        case $prefix in
+            24) network="$i1.$i2.$i3" ;;
+            16) network="$i1.$i2" ;;
+            8)  network="$i1" ;;
+            *)  echo "Unsupported subnet mask /$prefix"; exit 1 ;;
+        esac
+    fi
+    
+    echo "$ip $prefix $network"
+}
+
+# Function to find next available IPs
+find_next_ips() {
+    local interface=$1
+    local current_ip=$2
+    local prefix=$3
+    local network=$4
+    
+    # Extract the last octet
+    local last_octet=$(echo "$current_ip" | cut -d'.' -f4)
+    local base_network=$(echo "$current_ip" | cut -d'.' -f1-3)
+    
+    local ip1=""
+    local ip2=""
+    local candidate=$((last_octet + 1))
+    
+    # Find two available IPs
+    while [ -z "$ip1" ] || [ -z "$ip2" ]; do
+        if [ $candidate -ge 254 ]; then
+            break
+        fi
+        
+        local test_ip="$base_network.$candidate"
+        
+        # Check if IP is already in use
+        if ! ping -c 1 -W 1 "$test_ip" >/dev/null 2>&1 && ! ip addr show "$interface" | grep -q "$test_ip"; then
+            if [ -z "$ip1" ]; then
+                ip1="$test_ip"
+            elif [ -z "$ip2" ]; then
+                ip2="$test_ip"
+            fi
+        fi
+        candidate=$((candidate + 1))
+    done
+    
+    echo "$ip1 $ip2"
+}
+
+# Function to add IP addresses
+add_ip_addresses() {
+    local interface=$1
+    local prefix=$2
+    local ip1=$3
+    local ip2=$4
+    
+    echo "Adding IP addresses to interface $interface:"
+    echo "  Adding $ip1/$prefix"
+    if ip addr add "$ip1/$prefix" dev "$interface"; then
+        echo "    ✓ Successfully added $ip1/$prefix"
+    else
+        echo "    ✗ Failed to add $ip1/$prefix"
+    fi
+    
+    echo "  Adding $ip2/$prefix"
+    if ip addr add "$ip2/$prefix" dev "$interface"; then
+        echo "    ✓ Successfully added $ip2/$prefix"
+    else
+        echo "    ✗ Failed to add $ip2/$prefix"
+    fi
+}
+
+# Function to remove IP addresses (cleanup function)
+cleanup_ips() {
+    local interface=$1
+    local prefix=$2
+    local ip1=$3
+    local ip2=$4
+    
+    echo "Removing added IP addresses:"
+    echo "  Removing $ip1/$prefix"
+    ip addr del "$ip1/$prefix" dev "$interface" 2>/dev/null
+    echo "  Removing $ip2/$prefix"
+    ip addr del "$ip2/$prefix" dev "$interface" 2>/dev/null
+}
+
+# Main execution
+main() {
+    echo "=== Ethernet Interface IP Address Manager ==="
+    echo
+    
+    # Check if running as root
+    check_root
+    
+    # Detect ethernet interface
+    echo "Detecting ethernet interface..."
+    eth_interface=$(detect_ethernet_interface)
+    
+    if [[ -z "$eth_interface" ]]; then
+        echo "Error: No ethernet interface found"
+        exit 1
+    fi
+    
+    echo "Found ethernet interface: $eth_interface"
+    
+    # Get current IP address
+    echo "Getting current IP address..."
+    current_ip=$(get_first_ip "$eth_interface")
+    
+    if [ -z "$current_ip" ]; then
+        echo "Error: No IP address found on interface $eth_interface"
+        exit 1
+    fi
+    
+    echo "Current IP address: $current_ip"
+    
+    # Get network information
+    network_info=$(get_network_info "$eth_interface")
+    ip=$(echo "$network_info" | cut -d' ' -f1)
+    prefix=$(echo "$network_info" | cut -d' ' -f2)
+    network=$(echo "$network_info" | cut -d' ' -f3)
+    echo "Network: $current_ip/$prefix"
+    
+    # Find next available IPs
+    echo "Finding next available IP addresses..."
+    next_ips=$(find_next_ips "$eth_interface" "$current_ip" "$prefix" "$network")
+    ip1=$(echo "$next_ips" | cut -d' ' -f1)
+    ip2=$(echo "$next_ips" | cut -d' ' -f2)
+    
+    if [ -z "$ip1" ] || [ -z "$ip2" ]; then
+        echo "Error: Could not find 2 available IP addresses in the subnet"
+        exit 1
+    fi
+    
+    echo "Next available IPs: $ip1, $ip2"
+    
+    # Add IP addresses
+    add_ip_addresses "$eth_interface" "$prefix" "$ip1" "$ip2"
+    
+    echo
+    echo "=== Current IP addresses on $eth_interface ==="
+    ip addr show "$eth_interface" | grep 'inet '
+    
+    echo
+    echo "=== Script completed successfully ==="
+    echo "Added IP addresses: $ip1/$prefix, $ip2/$prefix"
+    echo
+    echo "To remove these IP addresses later, run:"
+    echo "  ip addr del $ip1/$prefix dev $eth_interface"
+    echo "  ip addr del $ip2/$prefix dev $eth_interface"
+}
+
+# Set up trap for cleanup on script exit
+trap 'echo "Script interrupted"' INT TERM
+
+# Run main function
+main "$@"
