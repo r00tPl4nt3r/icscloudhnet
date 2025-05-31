@@ -59,8 +59,10 @@ services:
     container_name: cowrie_mqtt9v
     restart: unless-stopped
     network_mode: host
-    env_file:
-      - ./cowrie/cowrie_mqtt.env
+    mounts:
+      type: bind
+      source: ./cowrie/cowrie_ui
+      target: /cowrie/cowrie-git/etc
       
 
   cowrie_ui:
@@ -68,6 +70,10 @@ services:
     container_name: cowrie_ui9v
     restart: unless-stopped
     network_mode: host
-    env_file:
-      - ./cowrie/cowrie_ui.env
+    mounts:
+      type: bind
+      source: ./cowrie/cowrie_ui
+      target: /cowrie/cowrie-git/etc
+
+
 
