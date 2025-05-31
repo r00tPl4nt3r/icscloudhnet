@@ -59,13 +59,10 @@ services:
     container_name: cowrie_mqtt9v
     restart: unless-stopped
     network_mode: host
-    volumes:
-      - ./cowrie/cowrie_ui/cowrie.cfg /cowrie/cowrie-git/etc/cowrie.cfg
+
 
   cowrie_ui:
     image: cowrie_ui:latest
     container_name: cowrie_ui9v
     restart: unless-stopped
     network_mode: host
-    volumes:
-      - ./cowrie/cowrie_mqtt/cowrie.cfg /cowrie/cowrie-git/etc/cowrie.cfg
