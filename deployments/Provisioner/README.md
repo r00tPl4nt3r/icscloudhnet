@@ -26,9 +26,20 @@ To install the Provisioner, follow these steps:
 1. Clone the repository:
     ```sh
     git clone https://github.com/r00tPl4nt3r/trapnet
-    cd trapnet/deployments/Provisioner
+    cd trapnet/deployments/Provisioner/docker
     ```
 
+2. Build all the images locally.
+
+    ```sh
+    docker build -t trapnet-ca ./ca/
+    docker build -t trapnet-api ./flask/
+    docker build -t trapnet-provisioner ./provisioner/
+    docker build -t trapnet-wg ./wg/
+    ```
+    
+
+   
 2. Build and run the Docker containers using `docker-compose`:
     ```sh
     docker-compose up -d
