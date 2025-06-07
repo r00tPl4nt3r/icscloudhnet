@@ -14,6 +14,7 @@ server = Server()
 # Define the endpoint URL for the server
 url = "opc.tcp://0.0.0.0:4840"
 server.set_endpoint(url)
+server.set_server_name("SIEMENS OPC UA Server")
 
 
 ##0:Root,0:Objects,0:Server,0:Namespaces,0:http://opcfoundation.org/UA/
