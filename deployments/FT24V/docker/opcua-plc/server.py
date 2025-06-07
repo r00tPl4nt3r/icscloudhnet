@@ -63,7 +63,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_VGR.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
-                except:
+                except Exception as e:
                     print(row)
                     print("error:", e)
             if "gtyp_Setup" in row[0]:  
@@ -71,7 +71,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_Setup.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))    
                     opcuavar.set_writable()
-                except:
+                except Exception as e:
                     print(row)
                     print("error:", e)
             if "gtyp_HBW" in row[0]:
@@ -79,7 +79,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_HBW.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable() 
-                except:
+                except Exception as e:
                     print(row)
                     print("error:", e)
             if "gtyp_SSC" in row[0]:
@@ -87,7 +87,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_SSC.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
-                except:
+                except Exception as e:
                     print(row)
                     print("error:", e)
 
