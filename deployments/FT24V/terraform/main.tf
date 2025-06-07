@@ -149,13 +149,13 @@ runcmd:
   - chmod 600 /etc/wireguard/private.key
   - echo ${var.wireguard_server_public_key} | sudo tee /etc/wireguard/public.key > /dev/null
   - echo "[Interface]" | sudo tee /etc/wireguard/wg0.conf > /dev/null
-  - echo "Address = 10.20.20.1/32" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
+  - echo "Address = ${var.wireguard_server_private_ip}" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
   - echo "ListenPort = ${var.wireguard_server_port}" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
   - echo "PostUp = wg set %i private-key /etc/wireguard/private.key" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
 
   - echo "[Peer]" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
-  - echo "PublicKey = dAeIAJFETQ5tsZSm4V+FtYgtWhboX9fhrhkDY4Co1l8=" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
-  - echo "AllowedIPs = 10.20.20.3/32, 192.168.183.0/24" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
+  - echo "PublicKey = ${var.wireguard_client_public_key}" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
+  - echo "AllowedIPs = ${var.wireguard_approved_networks}" | sudo tee -a /etc/wireguard/wg0.conf > /dev/null
 
   - sudo systemctl enable wg-quick@wg0
   - sudo systemctl start wg-quick@wg0
