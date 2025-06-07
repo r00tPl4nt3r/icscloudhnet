@@ -38,3 +38,8 @@ variable "wireguard_server_port" {
     description = "WireGuard server port"
     type        = number
 }
+
+variable "wireguard_approved_networks" {
+    description = "List of approved networks for WireGuard"
+    type        = string
+}
