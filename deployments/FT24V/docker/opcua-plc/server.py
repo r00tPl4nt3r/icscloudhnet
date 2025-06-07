@@ -54,9 +54,9 @@ with open('./data/opcua_tree.csv', 'r') as file:
                 datatype = "ua." + row[4].split("type:")[1].split(")")[0]
                 if datatype == "ua.VariantType.Int16" or datatype == "ua.VariantType.Int32" or datatype == "ua.VariantType.Int64":
                     value = int(row[4].split("val:")[1].split(",")[0])
-            except:
+            except Exception as e:
                 print(row)
-                print("error")
+                print("error:", e)
                 continue
             if "gtyp_VGR" in row[0]:
                 try:
@@ -64,8 +64,8 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar = gtyp_VGR.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
                 except:
-                    #print(row)
-                    print("error")
+                    print(row)
+                    print("error:", e)
             if "gtyp_Setup" in row[0]:  
                 try:
                     # Add a variable to the PLC node
@@ -73,7 +73,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable()
                 except:
                     print(row)
-                    print("error")
+                    print("error:", e)
             if "gtyp_HBW" in row[0]:
                 try:
                     # Add a variable to the PLC node
@@ -81,7 +81,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable() 
                 except:
                     print(row)
-                    print("error")
+                    print("error:", e)
             if "gtyp_SSC" in row[0]:
                 try:
                     # Add a variable to the PLC node
@@ -89,7 +89,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable()
                 except:
                     print(row)
-                    print("error")
+                    print("error:", e)
 
 # Run the server indefinitely
 server.start()
