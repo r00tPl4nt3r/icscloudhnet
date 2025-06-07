@@ -88,7 +88,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
 
 # Run the server indefinitely
 server.start()
-logging.INFO("OPC UA server Started")
+logging.info("OPC UA server Started")
 
 try:
     while True:
