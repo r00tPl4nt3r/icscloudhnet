@@ -2,8 +2,6 @@ from opcua import ua, Server
 from opcua import Node
 import time, random, csv, sys
 import logging
-from opcua import ua
-
 
 csv.field_size_limit(sys.maxsize)
 logging.basicConfig(level=logging.WARN)
@@ -15,13 +13,13 @@ server = Server()
 url = "opc.tcp://0.0.0.0:4840"
 server.set_endpoint(url)
 server.set_server_name("SIEMENS OPC UA Server")
+server.description = ua.ApplicationDescription()  
+server.description.application_uri = "urn:Siemens:opcua:server"
 server.set_application_uri("urn:Siemens:opcua:server")
-app_desc = server.get_server_description()
-print("Application URI is:", app_desc.ApplicationUri)
-
+print("Server started at {}".format(url))
+print("Server application URI: {}".format(server.get_application_uri()))  
 
 ##0:Root,0:Objects,0:Server,0:Namespaces,0:http://opcfoundation.org/UA/
-
 
 # Create a new address space
 address_space = server.register_namespace("two")
@@ -90,6 +88,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
 
 # Run the server indefinitely
 server.start()
+server.set_application_uri("urn:Siemens:opcua:server")
 logging.info("OPC UA server Started")
 
 try:
