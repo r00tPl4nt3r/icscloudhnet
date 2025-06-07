@@ -13,3 +13,13 @@
 *.p12
 #Templates
 *.json
+
+#Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+.terraform.tfstate
+.terraform.tfstate.backup
+.terraform.tfstate.backup.*
