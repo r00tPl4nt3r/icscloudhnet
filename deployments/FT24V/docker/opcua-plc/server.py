@@ -16,7 +16,7 @@ url = "opc.tcp://0.0.0.0:4840"
 server.set_endpoint(url)
 server.set_server_name("SIEMENS OPC UA Server")
 server.set_application_uri("urn:Siemens:opcua:server")
-
+print("Application URI is:", server.application_uri)
 
 ##0:Root,0:Objects,0:Server,0:Namespaces,0:http://opcfoundation.org/UA/
 
@@ -48,7 +48,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
     i=0
     for row in reader:
         if row[10] == "NodeClass.Variable" and "gtyp" in row[0]:
-            print(row)
+            #print(row)
             try:
                 s_nodeid= row[0].split(";s=")[1]
                 datatype = "ua." + row[4].split("type:")[1].split(")")[0]
