@@ -28,6 +28,7 @@ services:
     container_name: plc_opcua
     hostname: plc_opcua
     restart: unless-stopped
+    network_mode: host
     ports:
       - 4840:4840
     volumes:
