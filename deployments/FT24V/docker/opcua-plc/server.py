@@ -55,6 +55,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                 if datatype == "ua.VariantType.Int16" or datatype == "ua.VariantType.Int32" or datatype == "ua.VariantType.Int64":
                     value = int(row[4].split("val:")[1].split(",")[0])
             except:
+                print(row)
                 print("error")
                 continue
             if "gtyp_VGR" in row[0]:
@@ -63,6 +64,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar = gtyp_VGR.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
                 except:
+                    #print(row)
                     print("error")
             if "gtyp_Setup" in row[0]:  
                 try:
@@ -70,6 +72,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar = gtyp_Setup.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))    
                     opcuavar.set_writable()
                 except:
+                    print(row)
                     print("error")
             if "gtyp_HBW" in row[0]:
                 try:
@@ -77,6 +80,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar = gtyp_HBW.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable() 
                 except:
+                    print(row)
                     print("error")
             if "gtyp_SSC" in row[0]:
                 try:
@@ -84,6 +88,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar = gtyp_SSC.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
                 except:
+                    print(row)
                     print("error")
 
 # Run the server indefinitely
