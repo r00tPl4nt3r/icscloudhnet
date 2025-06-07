@@ -51,12 +51,12 @@ services:
 
   cowrie_mqtt:
     image: cowrie_mqtt:latest
-    container_name: cowrie_mqtt9v
+    container_name: cowrie_mqtt24v
     restart: unless-stopped
     network_mode: host
 
   cowrie_ui:
     image: cowrie_ui:latest
-    container_name: cowrie_ui9v
+    container_name: cowrie_ui24v
     restart: unless-stopped
     network_mode: host
