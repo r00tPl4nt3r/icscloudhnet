@@ -43,7 +43,6 @@ with open('./data/opcua_tree.csv', 'r') as file:
     reader = csv.reader(file, delimiter=';')
     # Skip the header
     next(reader)
-    # Iterate over the rows (10 first lines)
 
     i=0
     for row in reader:
