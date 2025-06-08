@@ -36,7 +36,7 @@ services:
       - ./opcua-plc/data/opcua_tree.csv:/user/app/src/data/opcua_tree.csv
 
   
-  nginx-proxy-ft9v:
+  nginx-proxy-ft24v:
     image: nginx:latest
     container_name: nginx_proxy_ft24v
     restart: unless-stopped
