@@ -4,7 +4,13 @@ import time, random, csv, sys
 import logging
 
 csv.field_size_limit(sys.maxsize)
-logging.basicConfig(level=logging.INFO)
+
+logging.basicConfig(
+    level=logging.INFO,
+    stream=sys.stdout,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger("opcua_server")
 
 
 # Create an OPC UA server instance
@@ -16,8 +22,8 @@ server.set_server_name("SIEMENS OPC UA Server")
 server.description = ua.ApplicationDescription()  
 server.description.application_uri = "urn:Siemens:opcua:server"
 server.set_application_uri("urn:Siemens:opcua:server")
-print("Server started at {}".format(url))
-print("Server application URI: {}".format(server.get_application_uri()))  
+logger.info("OPC UA server started at %s", url)
+logger.info("Server application URI: %s", server.get_application_uri())  
 
 ##0:Root,0:Objects,0:Server,0:Namespaces,0:http://opcfoundation.org/UA/
 
@@ -30,7 +36,8 @@ plc = server.get_objects_node().add_object(address_space, "PLC")
 #Set nodeid as a string
 plc.set_attribute(ua.AttributeIds.DisplayName, ua.DataValue(ua.LocalizedText("PLC")))
 plc.set_attribute(ua.AttributeIds.Description, ua.DataValue(ua.LocalizedText("PLC node")))
-print(plc.nodeid)
+logger.info("PLC node created with NodeId: %s", plc.nodeid)
+
 gtyp_VGR = plc.add_object(address_space, "gtyp_VGR")
 gtyp_Setup = plc.add_object(address_space, "gtyp_Setup")
 gtyp_HBW = plc.add_object(address_space, "gtyp_HBW")
@@ -54,8 +61,8 @@ with open('./data/opcua_tree.csv', 'r') as file:
                 if datatype == "ua.VariantType.Int16" or datatype == "ua.VariantType.Int32" or datatype == "ua.VariantType.Int64":
                     value = int(row[4].split("val:")[1].split(",")[0])
             except Exception as e:
-                print(row)
-                print("error:", e)
+                logger.error("Error processing row: %s", row)
+                logger.error("Error details: %s", e)
                 continue
             if "gtyp_VGR" in row[0]:
                 try:
@@ -64,8 +71,8 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable()
                     opcuavar.set_value_rank(-1)
                 except Exception as e:
-                    print(row)
-                    print("error:", e)
+                    logger.error("Error processing row: %s", row)
+                    logger.error("Error details: %s", e)
             if "gtyp_Setup" in row[0]:  
                 try:
                     # Add a variable to the PLC node
@@ -73,8 +80,8 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable()
                     opcuavar.set_value_rank(-1)
                 except Exception as e:
-                    print(row)
-                    print("error:", e)
+                    logger.error("Error processing row: %s", row)
+                    logger.error("Error details: %s", e)
             if "gtyp_HBW" in row[0]:
                 try:
                     # Add a variable to the PLC node
@@ -82,8 +89,8 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable()
                     opcuavar.set_value_rank(-1)
                 except Exception as e:
-                    print(row)
-                    print("error:", e)
+                    logger.error("Error processing row: %s", row)
+                    logger.error("Error details: %s", e)
             if "gtyp_SSC" in row[0]:
                 try:
                     # Add a variable to the PLC node
@@ -91,13 +98,14 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     opcuavar.set_writable()
                     opcuavar.set_value_rank(-1)
                 except Exception as e:
-                    print(row)
-                    print("error:", e)
+                    logger.error("Error processing row: %s", row)
+                    logger.error("Error details: %s", e)
 
 # Run the server indefinitely
 server.start()
 server.set_application_uri("urn:Siemens:opcua:server")
-logging.info("OPC UA server Started")
+logger.info("OPC UA server is running at %s", url)
+
 
 try:
     while True:
@@ -106,4 +114,5 @@ try:
          
 except KeyboardInterrupt:
     server.stop()
-    logging.debug("OPC UA server stopped")
+    logger.info("OPC UA server stopped by user")
+    
