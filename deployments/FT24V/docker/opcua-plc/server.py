@@ -4,7 +4,7 @@ import time, random, csv, sys
 import logging
 
 csv.field_size_limit(sys.maxsize)
-logging.basicConfig(level=logging.WARN)
+logging.basicConfig(level=logging.INFO)
 
 
 # Create an OPC UA server instance
@@ -62,6 +62,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_VGR.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
+                    opcuavar.set_value_rank(-1)
                 except Exception as e:
                     print(row)
                     print("error:", e)
@@ -70,6 +71,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_Setup.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))    
                     opcuavar.set_writable()
+                    opcuavar.set_value_rank(-1)
                 except Exception as e:
                     print(row)
                     print("error:", e)
@@ -77,7 +79,8 @@ with open('./data/opcua_tree.csv', 'r') as file:
                 try:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_HBW.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
-                    opcuavar.set_writable() 
+                    opcuavar.set_writable()
+                    opcuavar.set_value_rank(-1)
                 except Exception as e:
                     print(row)
                     print("error:", e)
@@ -86,6 +89,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     # Add a variable to the PLC node
                     opcuavar = gtyp_SSC.add_variable(ua.NodeId(s_nodeid,3), row[3], value, eval(datatype))
                     opcuavar.set_writable()
+                    opcuavar.set_value_rank(-1)
                 except Exception as e:
                     print(row)
                     print("error:", e)
