@@ -1,4 +1,4 @@
 FROM cowrie/cowrie
 COPY ./cowrie.cfg /cowrie/cowrie-git/etc/cowrie.cfg
 COPY ./userdb.txt /cowrie/cowrie-git/etc/userdb.txt
-COPY ./password /cowrie/cowrie-git/etc/password
+COPY ./passwd /cowrie/cowrie-git/etc/password
