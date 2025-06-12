@@ -1,5 +1,6 @@
 {
   "command": {
+    "ssh -V": "OpenSSH_9.2p1 -2+deb12u3, OpenSSL 3.0.14 4 Jun 2024",
     "ps": [
       {
         "COMMAND": "/lib/systemd/systemd --system --deserialize 20",
