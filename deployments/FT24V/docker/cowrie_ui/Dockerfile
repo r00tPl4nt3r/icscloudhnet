@@ -6,4 +6,4 @@ COPY ./etc/passwd /cowrie/cowrie-git/honeyfs/etc/passwd
 COPY ./etc/shadow /cowrie/cowrie-git/honeyfs/etc/shadow
 COPY ./etc/group /cowrie/cowrie-git/honeyfs/etc/group
 COPY ./etc/cmdoutput.json /cowrie/cowrie-git/src/cowrie/data/cmdoutput.json
-
+COPY ./commands/netstat.py /cowrie/cowrie-git/cowrie/commands/netstat.py
