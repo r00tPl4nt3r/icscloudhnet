@@ -11,6 +11,7 @@ services:
     volumes:
       - ./mosquitto-brkr/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ./mosquitto-brkr/config/password.txt:/mosquitto/config/password.txt
+      - ./mosquitto-brkr/config/acl.txt:/mosquitto/config/acl.txt
   red-node-ui:
     image: ft/ft-ui-opcua:latest
     hostname: node-red-ui
