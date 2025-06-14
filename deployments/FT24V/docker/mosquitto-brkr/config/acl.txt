@@ -12,3 +12,5 @@ topic readwrite $SYS/#
 user operator
 topic readwrite i/#
 topic readwrite o/#
+topic readwrite f/#
+topic readwrite #
