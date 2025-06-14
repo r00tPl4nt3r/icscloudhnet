@@ -1,8 +1,6 @@
 # anonymous (no user) allow anonymous access to specific topics
-topic readwrite i/cam 
-topic f/i/stock
-topic f/i/nfc/ds
-topic f/i/state/hbw
+topic readwrite i/# 
+topic readwrite f/#
 
 # Admin user has full access
 user admin
