@@ -1,3 +1,9 @@
+# anonymous (no user) allow anonymous access to specific topics
+topic readwrite i/cam 
+topic f/i/stock
+topic f/i/nfc/ds
+topic f/i/state/hbw
+
 # Admin user has full access
 user admin
 topic readwrite #
@@ -7,13 +13,3 @@ topic readwrite $SYS/#
 user operator
 topic readwrite i/#
 topic readwrite o/#
-
-# anonymous allow anonymous access to specific topics
-user anonymous
-topic readwrite i/cam 
-topic f/i/stock
-topic f/i/nfc/ds
-topic f/i/state/hbw
-
-user 
-topic readwrite i/cam
