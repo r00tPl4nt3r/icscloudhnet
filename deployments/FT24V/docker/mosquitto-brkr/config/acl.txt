@@ -1,6 +1,7 @@
 # anonymous (no user) allow anonymous access to specific topics
 topic readwrite i/# 
 topic readwrite f/#
+topic readwrite o/#
 
 # Admin user has full access
 user admin
