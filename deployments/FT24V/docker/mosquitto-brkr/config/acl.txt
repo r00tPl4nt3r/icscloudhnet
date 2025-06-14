@@ -14,3 +14,6 @@ topic readwrite i/cam
 topic f/i/stock
 topic f/i/nfc/ds
 topic f/i/state/hbw
+
+user 
+topic readwrite i/cam
