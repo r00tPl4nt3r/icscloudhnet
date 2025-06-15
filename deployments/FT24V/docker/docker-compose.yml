@@ -69,3 +69,11 @@ services:
     container_name: cowrie_plc24v
     restart: unless-stopped
     network_mode: host
+
+  ft-sensor:
+    image: ft/ft-sensor
+    container_name: ft-sensor9v
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./ft-sensor/data/:/user/app/src/data
