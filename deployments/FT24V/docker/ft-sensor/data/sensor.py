@@ -10,7 +10,7 @@ import random
 
 port = 1883
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-client.connect("ft-broker", port=port)
+client.connect("ft-broker-plc", port=port)
 
 
 data = {}
