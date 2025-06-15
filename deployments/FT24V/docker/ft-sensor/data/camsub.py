@@ -6,8 +6,13 @@ import time
 import paho.mqtt.client as mqtt
 import logging
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("ft-sensor")
+logger.setLevel(logging.INFO)
+
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 x = y = 1
 min = 0
