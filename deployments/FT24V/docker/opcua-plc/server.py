@@ -101,6 +101,7 @@ with open('./data/opcua_tree.csv', 'r') as file:
                     logger.error("Error processing row: %s", row)
                     logger.error("Error details: %s", e)
 
+
 # Run the server indefinitely
 server.start()
 server.set_application_uri("urn:Siemens:opcua:server")
