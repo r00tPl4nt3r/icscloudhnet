@@ -2,6 +2,7 @@
 topic readwrite i/# 
 topic readwrite f/#
 topic readwrite o/#
+topic readwrite c/#
 
 # Admin user has full access
 user admin
