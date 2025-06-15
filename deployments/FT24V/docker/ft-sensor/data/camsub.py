@@ -20,7 +20,7 @@ max = 3
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, reason_code, properties):
-    logging.info(f"Connected with result code {reason_code}")
+    logger.info(f"Connected with result code {reason_code}")
     client.subscribe("o/ptu")
 
 # The callback for when a PUBLISH message is received from the server.
