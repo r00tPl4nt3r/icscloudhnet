@@ -71,7 +71,7 @@ services:
     network_mode: host
 
   ft-sensor:
-    image: ft/ft-sensor
+    image: ft/ft-sensor-plc:latest
     container_name: ft-sensor9v
     restart: unless-stopped
     network_mode: host
