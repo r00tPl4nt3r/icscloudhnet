@@ -26,10 +26,9 @@ def on_connect(client, userdata, flags, reason_code, properties):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     global x, y
-    logging.info(f"{msg.topic} {msg.payload}")
+    logging.info(f"Received from sbscription topic: {msg.topic} message: {msg.payload}")
 
     jsonmsg = json.loads(msg.payload.decode())
-    logging.info(jsonmsg)
 
     if jsonmsg["cmd"] == "relmove_left": x = (x - 1) % max; time.sleep(2)
     if jsonmsg["cmd"] == "relmove_right": x = (x + 1) % max; time.sleep(2)
@@ -54,6 +53,7 @@ def on_message(client, userdata, msg):
     topic = "i/cam"
     message = json.dumps(icamera)
     client.publish(topic, message)
+    logging.info(f"Published message to topic {topic}")
 
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 mqttc.on_connect = on_connect
