@@ -72,7 +72,7 @@ services:
 
   ft-sensor:
     image: ft/ft-sensor-plc:latest
-    container_name: ft-sensor9v
+    container_name: ft-sensor24v
     restart: unless-stopped
     network_mode: host
     volumes:

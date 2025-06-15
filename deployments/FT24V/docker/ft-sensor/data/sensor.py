@@ -37,7 +37,7 @@ while True:
         "rt" : round(random.gauss(23, 0.5),2),
         "t" : round(random.gauss(21, 0.5),0),
         "ts" : datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")}
-    client.connect("ft-broker", port=port)
+    client.connect("ft-broker-plc", port=port)
     topic = "i/bme680"
     message = json.dumps(ibme680)
     client.publish(topic, message)
