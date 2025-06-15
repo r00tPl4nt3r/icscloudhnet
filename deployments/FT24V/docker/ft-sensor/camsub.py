@@ -55,7 +55,7 @@ mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 mqttc.on_connect = on_connect
 mqttc.on_message = on_message
 
-mqttc.connect("ft-broker", 1883, 60)
+mqttc.connect("ft-broker-plc", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.

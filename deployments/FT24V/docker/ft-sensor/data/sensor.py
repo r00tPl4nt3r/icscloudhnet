@@ -22,7 +22,7 @@ icamera={
     "ts" : datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     }
 
-client.connect("ft-broker", port=port)
+client.connect("ft-broker-plc", port=port)
 topic = "i/cam"
 message= json.dumps(icamera)
 client.publish(topic, message)
