@@ -1,0 +1,17 @@
+# anonymous (no user) allow anonymous access to specific topics
+topic readwrite i/# 
+topic readwrite f/#
+topic readwrite o/#
+topic readwrite c/#
+
+# Admin user has full access
+user admin
+topic readwrite #
+topic readwrite $SYS/#
+
+# Operator users can access to subtopics
+user operator
+topic readwrite i/#
+topic readwrite o/#
+topic readwrite f/#
+topic readwrite #

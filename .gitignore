@@ -1,3 +1,6 @@
+#Folders
+.vscode/
+.venv/
 # ignore ALL .log files
 *.log
 #ignore MacBook DS_Store
@@ -12,7 +15,7 @@
 *.pub
 *.p12
 #Templates
-*.json
+deployments/Provisioner/docker/flask/template/*.json
 
 #Terraform
 *.tfstate
