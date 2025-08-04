@@ -5,9 +5,33 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
+# generate a small random suffix for globally-unique storage account names
+resource "random_string" "suffix" {
+  length  = 6
+  upper   = false
+  numeric = true
+  special = false
+}
+
 resource "azurerm_resource_group" "resource_group" {
   name     = "trapnet_Provisioner"
   location = "West Europe"
+}
+
+resource "azurerm_storage_account" "sa" {
+  name                     = "trapnetprovisioner${random_string.suffix.result}"
+  resource_group_name      = azurerm_resource_group.resource_group.name
+  location                 = azurerm_resource_group.resource_group.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
+  access_tier              = "Cool"      
+}
+
+resource "azurerm_storage_container" "certs" {
+  name                  = "certs"
+  storage_account_name  = azurerm_storage_account.sa.name
+  container_access_type = "private"
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -138,16 +162,33 @@ runcmd:
   - systemctl enable docker
   - systemctl start docker
   - usermod -aG docker azureuser
+
+  # Install Docker Compose
+
   - mkdir -p /home/azureuser/repos
   - chown azureuser:azureuser /home/azureuser/repos
   - su - azureuser -c 'git clone https://github.com/r00tPl4nt3r/trapnet.git /home/azureuser/repos/trapnet'
-  - cd /home/azureuser/repos/trapnet/deployments/Provisioner/docker/
+
+  # Run docker builds and compose as azureuser
+  - su - azureuser -c 'cd /home/azureuser/repos/trapnet/deployments/Provisioner/docker/
   - docker build -t trapnet-ca ./ca/
   - docker build -t trapnet-api ./flask/
   - docker build -t trapnet-provisioner ./provisioner/
   - docker build -t trapnet-wg ./wg/
-  
-  - docker compose up -d
+  - docker compose up -d'
+
+  # Upload certificates to Azure Blob Storage
+  - apt-get update && apt-get install -y curl
+  - STORAGE_ACCOUNT="${azurerm_storage_account.sa.name}"
+  - CONTAINER="${azurerm_storage_container.certs.name}"
+  - SAS_TOKEN="${data.azurerm_storage_account_sas.upload.sas}"
+  - |
+    for f in client.crt client.key ca.crt; do
+      ls -la "/home/azureuser/repos/trapnet/deployments/Provisioner/docker/client/certs/$f"
+      curl -X PUT -T "/home/azureuser/repos/trapnet/deployments/Provisioner/docker/client/certs/$f" \
+            -H "x-ms-blob-type: BlockBlob" \
+            "https://${azurerm_storage_account.sa.name}.blob.core.windows.net/${azurerm_storage_container.certs.name}/$f${data.azurerm_storage_account_sas.upload.sas}"
+    done
 EOF
   )
 }

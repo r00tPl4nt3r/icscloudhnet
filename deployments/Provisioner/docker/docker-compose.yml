@@ -21,7 +21,7 @@ services:
       cp /ca/* /certs-ca;
       echo "API GW certificates configuration" | logger -t "CA";
       openssl genrsa -out /certs/apiserver.key 2048;      
-      openssl req -new -key /certs/apiserver.key -out /certs/apiserver.csr -subj "/CN=apiserver";
+      openssl req -new -key /certs/apiserver.key -out /certs/apiserver.csr -subj "/CN=trapnet-provisioner.westeurope.cloudapp.azure.com";
       openssl x509 -req -in /certs/apiserver.csr -CA ca.crt -CAkey /ca/ca.key -CAcreateserial -out /certs/apiserver.crt -days 500;
       openssl genrsa -out /client-certs/client.key 2048;
       openssl req -new -key /client-certs/client.key -out /client-certs/client.csr -subj "/CN=client";
