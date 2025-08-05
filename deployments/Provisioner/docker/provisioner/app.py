@@ -31,10 +31,7 @@ def deploy():
         server_keys = urlrequest.urlopen(req, jsondataasbytes)
         server_keys = json.loads(server_keys.read())
 
-        local_network_prefix = local_network_address.split("/")[0]
-        local_network_prefix = local_network_prefix.split(".")
-        local_network_prefix = local_network_prefix[0]+"."+local_network_prefix[1]+"."+local_network_prefix[2]
-        
+       
         #Define network address and port
         tunnel_network_address = "10."+str(random.randint(0,255))+"."+str(random.randint(0,255))+".0/24"
         tunnel_network_prefix = tunnel_network_address.split("/")[0]
