@@ -15,9 +15,7 @@ def deploy():
     try:
         #Save json from post
         deployment_name=frequest.json['deployment_name'] #e.g. FT9V, FT24V
-        local_network_address=frequest.json['local_network_address']
         deployment_type=frequest.json['deployment_type'] #e.g. "cloud", "on-premises"
-
         
         #request pub-private key pair from wg-key-server
         url = "http://wg:5000/keychain"
