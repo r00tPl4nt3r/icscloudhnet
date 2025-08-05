@@ -14,10 +14,10 @@ def hello_geek():
 def deploy():
     try:
         #Save json from post
-        deployment_name=frequest.json['deployment_name']
-        interface_public_ip=frequest.json['public_ip_address']
+        deployment_name=frequest.json['deployment_name'] #e.g. FT9V, FT24V
         local_network_address=frequest.json['local_network_address']
-        deployment_token=frequest.json['token']
+        deployment_type=frequest.json['deployment_type'] #e.g. "cloud", "on-premises"
+
         
         #request pub-private key pair from wg-key-server
         url = "http://wg:5000/keychain"
@@ -38,42 +38,61 @@ def deploy():
         local_network_prefix = local_network_prefix[0]+"."+local_network_prefix[1]+"."+local_network_prefix[2]
         
         #Define network address and port
-        remote_network_address = "10."+str(random.randint(0,255))+"."+str(random.randint(0,255))+".254/24"
-        honeynet_network_address = "172.17.1.0/24"
+        tunnel_network_address = "10."+str(random.randint(0,255))+"."+str(random.randint(0,255))+".0/24"
+        tunnel_network_prefix = tunnel_network_address.split("/")[0]
+        tunnel_network_prefix = tunnel_network_prefix.split(".")
+        tunnel_network_prefix = tunnel_network_prefix[0]+"."+tunnel_network_prefix[1]+"."+tunnel_network_prefix[2]
+        tunnel_server_network_address = tunnel_network_prefix+".254/24"
+        tunnel_client_network_address = tunnel_network_prefix+".1/24"
+        honeynet_network_address = "172.17.0.0/24"
+        honeynet_network_prefix = honeynet_network_address.split("/")[0]
+        honeynet_network_prefix = honeynet_network_prefix.split(".")
+        honeynet_network_prefix = honeynet_network_prefix[0]+"."+honeynet_network_prefix[1]+"."+honeynet_network_prefix[2]
         honeynet_network_address = honeynet_network_address.split("/")[0]
         honeynet_network_address = honeynet_network_address.split(".")
         honeynet_network_address = honeynet_network_address[0]+"."+honeynet_network_address[1]+"."+honeynet_network_address[2]
         client_port = random.randint(29000,29999)
         server_port = random.randint(29000,29999)
+        
         if deployment_name  == "FT9V":
             associations = {
-                local_network_prefix+".20:22": honeynet_network_address.split("/")[0]+".10:2522",
-                local_network_prefix+".25:22": honeynet_network_address.split("/")[0]+".5:2022",
-                local_network_prefix+".20:80": honeynet_network_address.split("/")[0]+".10:80",
-                local_network_prefix+".25:5555": honeynet_network_address.split("/")[0]+".5:5555",
-            }
+                "mqtt_server": honeynet_network_address.split("/")[0]+".5",
+                "hmi": honeynet_network_address.split("/")[0]+".10",      
+                }
+            server_url = "ft9v.westeurope.cloudapp.azure.com"
         elif deployment_name == "FT24V":
             associations = {
-                local_network_prefix+".100:22": honeynet_network_address.split("/")[0]+".10:2522",
-                local_network_prefix+".101:22": honeynet_network_address.split("/")[0]+".5:2022",
-                local_network_prefix+".100:1880": honeynet_network_address.split("/")[0]+".10:1880",
-                local_network_prefix+".101:4840": honeynet_network_address.split("/")[0]+".5:4840",
+                "mqtt_server": honeynet_network_address.split("/")[0]+".5",
+                "hmi": honeynet_network_address.split("/")[0]+".10",
+                "opcua_server": honeynet_network_address.split("/")[0]+".15",
             }
-             
-        
+            server_url = "ft24v.westeurope.cloudapp.azure.com"
+
         #return response to client
-        response = {
-            "deployment_name": deployment_name,
-            "deployment_token": deployment_token,
-            "client_keys": client_keys,
-            "server_keys": server_keys,
-            "remote_network_address": remote_network_address,
-            "client_port": client_port,
-            "server_port": server_port, 
-            "associations": associations,
-            "client_public_ip": interface_public_ip,
-            "local_network_address": local_network_address
-        }
+        if deployment_type == "cloud":
+            response = {
+                "deployment_name": deployment_name,
+                "client_keys": client_keys,
+                "tunnel_client_network_address": tunnel_client_network_address,
+                "tunnel_server_network_address": tunnel_server_network_address,
+                "client_port": client_port,
+                "server_port": server_port, 
+                "server_url": server_url,
+                "associations": associations,
+            }
+        elif deployment_type == "on-premises":
+            response = {
+                "deployment_name": deployment_name,
+                "client_keys": client_keys,
+                "server_keys": server_keys,
+                "tunnel_client_network_address": tunnel_client_network_address,
+                "tunnel_server_network_address": tunnel_server_network_address,
+                "client_port": client_port,
+                "server_port": server_port, 
+                "server_url": server_url,
+                "associations": associations,
+            }
+
 
         return response
     except Exception as e:
