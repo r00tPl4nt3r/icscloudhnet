@@ -68,6 +68,7 @@ def deploy():
             response = {
                 "deployment_name": deployment_name,
                 "client_keys": client_keys,
+                "server_public_key": server_keys["public_key"],
                 "tunnel_client_network_address": tunnel_client_network_address,
                 "tunnel_server_network_address": tunnel_server_network_address,
                 "client_port": client_port,

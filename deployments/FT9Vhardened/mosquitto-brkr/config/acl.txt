@@ -1,0 +1,8 @@
+topic read public/#
+topic write public/#
+pattern readwrite %u/#
+
+user admin
+topic readwrite secret/#
+topic readwrite backup/#
+topic readwrite critical/#
